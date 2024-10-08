@@ -1,53 +1,47 @@
 package Quest03;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Faturamento {
     public static void main(String[] args){
+        String caminhoArquivo = "dados.json";
 
         try {
            ObjectMapper objectMapper = new ObjectMapper();
-           List<Map<String, Object>> faturamentoDiario = objectMapper.readValue(new File("faturamento.json"), new TypeReference<List<Map<String, Object>>>(){});
+           JsonNode faturamentos = objectMapper.readTree(new File(caminhoArquivo));
             
-           double menorFaturamento = Double.MAX_VALUE;
-           double maiorFaturamento = Double.MIN_VALUE;
+           double menorValor = Double.MAX_VALUE;
+           double maiorValor = Double.MIN_VALUE;
            double somaFaturamento = 0;
            int diasComFaturamento = 0;
 
-           for (Map<String, Object> dia : faturamentoDiario) {
-                double faturamento = (double) dia.get("faturamento");
+           for (JsonNode faturamento : faturamentos) {
+                double valor = faturamento.get("valor").asDouble();
 
-                if (faturamento > 0) {
+                if (valor > 0) {
+
+                    if (valor < menorValor) {
+                        menorValor = valor;
+                    }
+                    if (valor > maiorValor) {
+                        maiorValor = valor;
+                    }
+
+                    somaFaturamento = valor + somaFaturamento;
                     diasComFaturamento++;
-                    somaFaturamento += faturamento;
-
-                    if (faturamento < menorFaturamento) {
-                        menorFaturamento = faturamento;
-                    }
-                    if (faturamento > maiorFaturamento) {
-                        maiorFaturamento = faturamento;
-                    }
                     
                 }
            }
-           double mediaFaturamento = somaFaturamento / diasComFaturamento;
+           double mediaMensal = somaFaturamento / diasComFaturamento;
 
-           int diasAcimaDaMadia = 0;
-           for (Map<String, Object> dia : faturamentoDiario) {
-                double faturamento = (double) dia.get("faturamento");
-                if (faturamento > mediaFaturamento) {
-                    diasAcimaDaMadia++;  
-                }
-           }
+           
 
-           System.out.println("Menor faturamento: " + menorFaturamento);
-           System.out.println("Maior faturamento: " + maiorFaturamento);
-           System.out.println("Dias com faturamento acima da média: " + diasAcimaDaMadia);
+           System.out.printf("Menos faturamento: %.4f\n", menorValor);
+           System.out.printf("Maior faturamento: %.4f\n", maiorValor);
+           System.out.printf("Média de faturamento: %.4f\n", mediaMensal);
+           System.out.printf("Dias com faturamento acima da média: %.4f\n", diasComFaturamento);
 
         } catch (Exception e) {
             System.out.println("Erro ao ler o arquivo JASON: " + e.getMessage());
