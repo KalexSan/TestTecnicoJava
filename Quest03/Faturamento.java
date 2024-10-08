@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Faturamento {
     public static void main(String[] args){
-        String caminhoArquivo = "dados.json";
+        String caminhoArquivo = "Quest03\\dados.json";
 
         try {
            ObjectMapper objectMapper = new ObjectMapper();
@@ -41,7 +41,7 @@ public class Faturamento {
            System.out.printf("Menos faturamento: %.4f\n", menorValor);
            System.out.printf("Maior faturamento: %.4f\n", maiorValor);
            System.out.printf("Média de faturamento: %.4f\n", mediaMensal);
-           System.out.printf("Dias com faturamento acima da média: %.4f\n", diasComFaturamento);
+           System.out.println("Dias com faturamento acima da média: " + diasComFaturamento);
 
         } catch (Exception e) {
             System.out.println("Erro ao ler o arquivo JASON: " + e.getMessage());
